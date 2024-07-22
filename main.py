@@ -1,5 +1,6 @@
 import cv2
 import csv
+import time
 import cvzone
 from cvzone.HandTrackingModule import HandDetector
 
@@ -38,39 +39,55 @@ mcqList=[]
 for que in data:
     mcqList.append(MCQ(que))
 
-print(mcqList)
-
 que_num=0
-q_total=len(data)
+que_total=len(data)
 
 while True:
     success, img =cap.read()
     img=cv2.flip(img,1)
-    
-
+    print("x")
     hands, img=detector.findHands(img,flipType=False)
 
-    mcq=mcqList[3]
+    if que_num<que_total:
+        mcq=mcqList[que_num]
 
-    img, b_box=cvzone.putTextRect(img,mcq.que,[100,100],2,2,offset=50,border=4)
-    img, b_box_1=cvzone.putTextRect(img,mcq.choice_1,[100,250],2,2,offset=50,border=4)
-    img, b_box_2=cvzone.putTextRect(img,mcq.choice_2,[400,250],2,2,offset=50,border=4)
-    img, b_box_3=cvzone.putTextRect(img,mcq.choice_3,[100,400],2,2,offset=50,border=4)
-    img, b_box_4=cvzone.putTextRect(img,mcq.choice_4,[400,400],2,2,offset=50,border=4)
+        img, b_box=cvzone.putTextRect(img,mcq.que,[100,100],2,2,colorT=(40, 40, 40), colorR=(255, 255, 255),offset=40)
+        img, b_box_1=cvzone.putTextRect(img,mcq.choice_1,[100,250],2,2,colorT=(40, 40, 40), colorR=(255, 255, 255),offset=40)
+        img, b_box_2=cvzone.putTextRect(img,mcq.choice_2,[500,250],2,2,colorT=(40, 40, 40), colorR=(255, 255, 255),offset=40)
+        img, b_box_3=cvzone.putTextRect(img,mcq.choice_3,[100,400],2,2,colorT=(40, 40, 40), colorR=(255, 255, 255),offset=40)
+        img, b_box_4=cvzone.putTextRect(img,mcq.choice_4,[500,400],2,2,colorT=(40, 40, 40), colorR=(255, 255, 255),offset=40)
 
-    if hands:
-        lmList=hands[0]["lmList"]
-        cursor=lmList[8][:2]
+        print("y")
+        if hands:
+            lmList=hands[0]["lmList"]
+            cursor=lmList[8][:2]
+            print("z")
 
-        length,_,img=detector.findDistance(lmList[8][:2],lmList[12][:2],img)
-        # print(length)
+            length,_,img=detector.findDistance(lmList[8][:2],lmList[12][:2],img)
+            # print(length)
+            print("t")
+            if length<50:
+                mcq.update(cursor,[b_box_1,b_box_2,b_box_3,b_box_4])
+                print(mcq.user_ans)
+                if mcq.user_ans is not None:
+                    time.sleep(0.35)
+                    que_num+=1
 
-        if length<50:
-            mcq.update(cursor,[b_box_1,b_box_2,b_box_3,b_box_4])
-            print(mcq.user_ans)
-            if mcq.user_ans is not None:
-                pass
+    else:
+        score=0
+        for mcq in mcqList:
+            if mcq.ans==mcq.user_ans:
+                score+=1  
+        score=round((score/que_total)*100,2)
+        # print(score)
+        img, _ =cvzone.putTextRect(img,"Quiz completed",[250,300],2,2,colorT=(40, 40, 40), colorR=(255, 255, 255),offset=40)
+        img, _ =cvzone.putTextRect(img,f'Your score: {score}%',[700,300],2,2,colorT=(40, 40, 40), colorR=(255, 255, 255),offset=40)
             
+    # Draw progress bar
+    bar_value=150+(850//que_total)*que_num
+    cv2.rectangle(img,(150,600),(bar_value,650),(255,255,255),cv2.FILLED)
+    cv2.rectangle(img,(150,600),(1000,650),(20,20,20),4)
+    img, _ =cvzone.putTextRect(img,f'{round((que_num/que_total)*100)}%',[1030,635],2,2,colorT=(40, 40, 40), colorR=(255, 255, 255),offset=16)
 
     cv2.imshow("img",img)
     cv2.waitKey(1)
