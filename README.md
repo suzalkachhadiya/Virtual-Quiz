@@ -31,6 +31,13 @@
 ![Video Name](assets/quiz_pos.mp4)
 ![Video Name](assets/quiz_neg.mp4)
 
+<div style="display:flex; flex-wrap:wrap; gap:2%; justify-content:center;">
+<img style="width:49%; margin-top:10px;" src="./assets/1.png">
+<img style="width:49%; margin-top:10px;" src="./assets/2.png">
+<img style="width:49%; margin-top:10px;" src="./assets/3.png">
+<img style="width:49%; margin-top:10px;" src="./assets/4.png">
+</div>
+
 ## How to Start Project
 
 Follow these steps to get started with the project:
@@ -65,6 +72,7 @@ Follow these steps to get started with the project:
    This command will install all the required packages listed in the requirements.txt file.
 
 6. **Put Questions**
+
     Put csv file containing quiz questions into Data folder.
 
 7. **Run the Quiz App:**
