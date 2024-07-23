@@ -8,7 +8,7 @@ from cvzone.HandTrackingModule import HandDetector
 cap=cv2.VideoCapture(0)
 cap.set(3,1080)
 cap.set(4,480)
-detector=HandDetector(detectionCon=0.85)
+detector=HandDetector(detectionCon=0.8)
 
 class MCQ:
     def __init__(self,data):
@@ -96,7 +96,7 @@ while True:
                 score+=1  
         score=round((score/que_total)*100,2)
         print(score)
-        if score>=40:
+        if score>40:
             img, _ =cvzone.putTextRect(img,"Quiz completed",[250,300],2,2,colorT=(255, 0, 0), colorR=(240, 234, 180),offset=40)
             img, _ =cvzone.putTextRect(img,f'Your score: {score}%',[700,300],2,2,colorT=(0, 255, 0), colorR=(240, 234, 180),offset=40)
         else:
